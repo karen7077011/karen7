@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KAREN7077 — معرفی و مشخصات بازی‌ها</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#14121F;
+    --bg2:#1B1830;
+    --panel:#221E38;
+    --panel-line:#332C52;
+    --accent1:#FFB13C;
+    --accent2:#5CE1E6;
+    --text:#EDEAF6;
+    --muted:#9B95B3;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Vazirmatn', sans-serif;
+    overflow-x:hidden;
+  }
+  .mono{font-family:'JetBrains Mono', monospace;}
+  a{color:inherit; text-decoration:none;}
+  ul{list-style:none;}
+  button{font-family:inherit; cursor:pointer;}
+
+  /* scanline / grid texture */
+  .scan-bg{
+    background-image:
+      radial-gradient(circle at 20% 10%, rgba(92,225,230,0.08), transparent 40%),
+      radial-gradient(circle at 85% 30%, rgba(255,177,60,0.08), transparent 45%),
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 1px, transparent 1px, transparent 3px);
+  }
+
+  /* ---------- BOOT LOADER ---------- */
+  #boot{
+    position:fixed; inset:0; z-index:1000; background:var(--bg);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:22px; transition:opacity .6s ease, visibility .6s ease;
+  }
+  #boot .boot-logo{
+    font-family:'JetBrains Mono',monospace; font-weight:700; font-size:22px; letter-spacing:6px;
+    color:var(--text);
+  }
+  #boot .boot-logo span{color:var(--accent1);}
+  #boot .bar-track{
+    width:min(320px, 70vw); height:6px; background:var(--panel); border:1px solid var(--panel-line); position:relative; overflow:hidden;
+  }
+  #boot .bar-fill{
+    height:100%; width:0%; background:linear-gradient(90deg, var(--accent2), var(--accent1));
+  }
+  #boot .boot-label{font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--muted); letter-spacing:1px;}
+  #boot.hidden{opacity:0; visibility:hidden; pointer-events:none;}
+
+  @media (prefers-reduced-motion: reduce){
+    #boot{display:none;}
+  }
+
+  /* ---------- NAV ---------- */
+  header{
+    position:fixed; top:0; right:0; left:0; z-index:100;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 6vw;
+    background:rgba(20,18,31,0.85);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--panel-line);
+  }
+  .logo{
+    font-family:'JetBrains Mono', monospace; font-weight:700; letter-spacing:3px; font-size:16px;
+  }
+  .logo span{color:var(--accent1);}
+  nav ul{display:flex; gap:32px; font-size:14px; font-weight:500;}
+  nav a{position:relative; padding-bottom:4px;}
+  nav a::after{
+    content:""; position:absolute; right:0; bottom:0; height:2px; width:0;
+    background:var(--accent2); transition:width .3s;
+  }
+  nav a:hover::after{width:100%;}
+  header .cta-mini{
+    border:1px solid var(--accent1); color:var(--accent1); padding:8px 18px; font-size:13px; font-weight:600;
+    font-family:'JetBrains Mono',monospace; background:transparent; border-radius:2px;
+  }
+  header .cta-mini:hover{background:var(--accent1); color:#14121F;}
+  @media (max-width:820px){ nav ul{display:none;} }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    min-height:92vh; display:flex; flex-direction:column; justify-content:center;
+    padding:140px 6vw 60px; position:relative;
+  }
+  .hero .eyebrow{
+    font-family:'JetBrains Mono',monospace; color:var(--accent2); font-size:13px; letter-spacing:3px; margin-bottom:18px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .hero .eyebrow::before{content:"";width:34px;height:1px;background:var(--accent2);}
+  .hero h1{
+    font-size:clamp(38px, 7vw, 84px); font-weight:900; line-height:1.05; max-width:18ch;
+  }
+  .hero h1 span{color:var(--accent1);}
+  .hero p.lead{max-width:52ch; margin-top:22px; font-size:17px; line-height:1.9; color:var(--muted);}
+  .hero-actions{display:flex; gap:16px; margin-top:34px; flex-wrap:wrap;}
+  .btn-primary, .btn-ghost{
+    padding:14px 28px; font-size:15px; font-weight:600; border-radius:2px; border:1px solid transparent;
+  }
+  .btn-primary{background:var(--accent1); color:#14121F;}
+  .btn-primary:hover{background:#ffc266;}
+  .btn-ghost{border-color:var(--panel-line); color:var(--text);}
+  .btn-ghost:hover{border-color:var(--accent2); color:var(--accent2);}
+
+  .hero-stats{display:flex; gap:44px; margin-top:56px; flex-wrap:wrap;}
+  .hero-stats div span{display:block;}
+  .hero-stats .num{font-family:'JetBrains Mono',monospace; font-size:30px; font-weight:700; color:var(--accent2);}
+  .hero-stats .label{font-size:13px; color:var(--muted); margin-top:4px;}
+
+  /* ---------- GAMES ---------- */
+  .section{padding:100px 6vw;}
+  .section-head{display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:54px; flex-wrap:wrap; gap:18px;}
+  .section-head .tag{
+    font-family:'JetBrains Mono',monospace; color:var(--accent2); font-size:13px; letter-spacing:2px; margin-bottom:10px; display:block;
+  }
+  .section-head h2{font-size:clamp(28px,4vw,44px); font-weight:900;}
+  .section-head p{max-width:40ch; color:var(--muted); font-size:14px; line-height:1.8;}
+
+  .games-grid{
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(230px, 1fr)); gap:22px;
+  }
+  .game-card{
+    background:var(--panel); border:1px solid var(--panel-line); border-radius:6px; overflow:hidden;
+    cursor:pointer; transition:transform .3s ease, border-color .3s ease;
+    display:flex; flex-direction:column;
+  }
+  .game-card:hover{transform:translateY(-6px); border-color:var(--accent2);}
+  .game-cover{
+    height:130px; position:relative; display:flex; align-items:center; justify-content:center;
+    overflow:hidden;
+  }
+  .game-cover::before{
+    content:""; position:absolute; inset:0; opacity:0.9;
+  }
+  .game-cover .stripe{
+    position:absolute; width:180%; height:40px; background:rgba(255,255,255,0.08);
+    transform:rotate(-18deg); top:20%; right:-20%;
+  }
+  .game-cover svg{width:46px; height:46px; position:relative; z-index:2; opacity:0.92;}
+  .game-cover img{
+    position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:3;
+  }
+  .game-body{padding:16px 18px 20px;}
+  .game-tag{
+    font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:1px; color:var(--accent1);
+    display:flex; align-items:center; justify-content:space-between; gap:8px;
+  }
+  .rating-badge{
+    font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:700; color:var(--bg);
+    background:var(--accent2); padding:2px 7px; border-radius:3px;
+  }
+  .game-body h3{font-size:17px; font-weight:700; margin-top:8px;}
+  .game-body .meta{font-size:12px; color:var(--muted); margin-top:6px; font-family:'JetBrains Mono',monospace;}
+
+  /* genre backgrounds */
+  .genre-horror .game-cover{background:linear-gradient(135deg,#3a1030,#5c1420);}
+  .genre-action .game-cover{background:linear-gradient(135deg,#101a30,#241040);}
+  .genre-sport .game-cover{background:linear-gradient(135deg,#0f3324,#0a4a2e);}
+
+  /* ---------- MODAL ---------- */
+  .modal-overlay{
+    position:fixed; inset:0; background:rgba(10,9,16,0.82); backdrop-filter:blur(4px);
+    display:flex; align-items:center; justify-content:center; z-index:200; padding:20px;
+    opacity:0; visibility:hidden; transition:opacity .3s ease, visibility .3s ease;
+  }
+  .modal-overlay.open{opacity:1; visibility:visible;}
+  .modal-box{
+    background:var(--bg2); border:1px solid var(--panel-line); border-radius:8px; max-width:520px; width:100%;
+    padding:34px; position:relative; transform:translateY(14px); transition:transform .3s ease;
+  }
+  .modal-overlay.open .modal-box{transform:translateY(0);}
+  .modal-close{
+    position:absolute; top:16px; left:16px; background:none; border:none; color:var(--muted); font-size:20px;
+  }
+  .modal-close:hover{color:var(--accent1);}
+  .modal-tag{font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--accent2); letter-spacing:2px; display:flex; justify-content:space-between; align-items:center;}
+  .modal-cover{width:100%; height:180px; border-radius:6px; overflow:hidden; position:relative; margin-top:14px;}
+  .modal-cover img{width:100%; height:100%; object-fit:cover;}
+  .modal-box h3{font-size:26px; font-weight:900; margin-top:14px;}
+  .modal-box .desc{margin-top:14px; font-size:14px; line-height:1.9; color:var(--muted);}
+  .modal-specs{margin-top:22px; border-top:1px solid var(--panel-line);}
+  .modal-spec-row{
+    display:flex; justify-content:space-between; padding:11px 0; border-bottom:1px dashed var(--panel-line); font-size:13px;
+  }
+  .modal-spec-row span:first-child{color:var(--muted);}
+  .modal-spec-row span:last-child{font-family:'JetBrains Mono',monospace; font-weight:700;}
+
+  /* ---------- CONTACT ---------- */
+  .cta-section{
+    background:var(--panel); border-top:1px solid var(--panel-line); border-bottom:1px solid var(--panel-line);
+    padding:100px 6vw; text-align:center;
+  }
+  .cta-section h2{font-size:clamp(28px,5vw,48px); font-weight:900; max-width:20ch; margin:0 auto 18px;}
+  .cta-section p{max-width:44ch; margin:0 auto 32px; color:var(--muted); line-height:1.8;}
+  .cta-section .phone{
+    display:inline-flex; align-items:center; gap:10px; font-family:'JetBrains Mono',monospace;
+    font-size:20px; font-weight:700; color:var(--accent1); margin-bottom:28px;
+  }
+  footer{
+    padding:34px 6vw; display:flex; justify-content:space-between; align-items:center;
+    font-size:13px; color:var(--muted); flex-wrap:wrap; gap:12px;
+  }
+  footer .mono{color:var(--accent2);}
+</style>
+</head>
+<body>
+
+<div id="boot">
+  <div class="boot-logo">KAREN<span>7077</span></div>
+  <div class="bar-track"><div class="bar-fill" id="bootBar"></div></div>
+  <div class="boot-label mono" id="bootLabel">در حال بارگذاری... ۰٪</div>
+</div>
+
+<header>
+  <div class="logo">KAREN<span>7077</span></div>
+  <nav>
+    <ul>
+      <li><a href="#home">خانه</a></li>
+      <li><a href="#games">بازی‌ها</a></li>
+      <li><a href="#contact">تماس</a></li>
+    </ul>
+  </nav>
+  <a href="#contact" class="cta-mini">تماس با ما</a>
+</header>
+
+<section class="hero scan-bg" id="home">
+  <span class="eyebrow">معرفی و مشخصات بازی / KAREN7077</span>
+  <h1>مرجع معرفی و <span>مشخصات</span> بازی‌ها</h1>
+  <p class="lead">در KAREN7077 هر بازی با ژانر، پلتفرم، سال انتشار و توضیحات کامل معرفی شده تا قبل از تجربه‌ی هر بازی، دقیق بدونی چی در انتظارته.</p>
+  <div class="hero-actions">
+    <a href="#games" class="btn-primary">مشاهده بازی‌ها</a>
+    <a href="#contact" class="btn-ghost">تماس با ما</a>
+  </div>
+  <div class="hero-stats">
+    <div><span class="num mono">۱۰</span><span class="label">بازی معرفی‌شده</span></div>
+    <div><span class="num mono">۳</span><span class="label">ژانر اصلی</span></div>
+    <div><span class="num mono">۲۴/۷</span><span class="label">دسترسی به اطلاعات</span></div>
+  </div>
+</section>
+
+<section class="section scan-bg" id="games">
+  <div class="section-head">
+    <div>
+      <span class="tag">لیست بازی‌ها / LIBRARY</span>
+      <h2>بازی‌ها رو انتخاب کن</h2>
+    </div>
+    <p>روی هر کارت بزن تا ژانر، پلتفرم، سازنده و توضیحات کامل بازی رو ببینی.</p>
+  </div>
+  <div class="games-grid" id="gamesGrid"></div>
+</section>
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-box">
+    <button class="modal-close" id="modalClose">✕</button>
+    <span class="modal-tag mono"><span id="modalTag"></span><span class="rating-badge" id="modalRating"></span></span>
+    <div class="modal-cover" id="modalCoverWrap" style="display:none;"><img id="modalCoverImg" alt=""></div>
+    <h3 id="modalTitle"></h3>
+    <p class="desc" id="modalDesc"></p>
+    <div class="modal-specs" id="modalSpecs"></div>
+  </div>
+</div>
+
+<section class="cta-section" id="contact">
+  <h2>سوالی درباره‌ی بازی‌ها داری؟</h2>
+  <p>برای پیشنهاد بازی جدید، گزارش مشکل یا هر سوال دیگه‌ای، مستقیم تماس بگیر.</p>
+  <a href="tel:09931245185" class="phone mono">📞 ۰۹۹۳۱۲۴۵۱۸۵</a>
+  <div class="hero-actions" style="justify-content:center;">
+    <a href="tel:09931245185" class="btn-primary">تماس تلفنی</a>
+  </div>
+</section>
+
+<footer>
+  <div>© ۲۰۲۶ KAREN7077 — معرفی و مشخصات بازی</div>
+  <div class="mono">KAREN7077 / GAME LIBRARY</div>
+</footer>
+
+<script>
+  // ---- game data (edit this array to add/remove/change games) ----
+  const games = [
+    { slug:"re2remake", title:"Resident Evil 2 Remake", genre:"ترسناک / بقا", cls:"genre-horror", icon:"biohazard",
+      platform:"PS4 / PS5 / PC", year:"۲۰۱۹", developer:"Capcom", rating:"۹۱",
+      desc:"در راکون‌سیتی که به شهر ارواح تبدیل شده، لئون کندی (افسر تازه‌کار پلیس) و کلر ردفیلد (در جست‌وجوی برادرش) هرکدام مسیر جداگانه‌ای را برای فرار از میان زامبی‌ها و هیولای عظیم‌الجثه‌ی «Mr. X» طی می‌کنند." },
+    { slug:"re3remake", title:"Resident Evil 3 Remake", genre:"ترسناک / بقا", cls:"genre-horror", icon:"biohazard",
+      platform:"PS4 / PS5 / PC", year:"۲۰۲۰", developer:"Capcom", rating:"۸۱",
+      desc:"چند ساعت پیش از وقایع قسمت دوم، جیل ولنتاین تلاش می‌کند از شهر در حال سقوط راکون‌سیتی فرار کند، در حالی‌که موجود بایوارگانیک نمسیس بی‌وقفه او را تعقیب می‌کند." },
+    { slug:"re4remake", title:"Resident Evil 4 Remake", genre:"ترسناک / بقا", cls:"genre-horror", icon:"biohazard",
+      platform:"PS4 / PS5 / PC", year:"۲۰۲۳", developer:"Capcom", rating:"۹۳",
+      desc:"شش سال بعد از فاجعه‌ی راکون‌سیتی، لئون کندی به روستایی دورافتاده در اروپا فرستاده می‌شود تا دختر رئیس‌جمهور آمریکا را از دست فرقه‌ای مرموز و آلوده به انگل‌های کنترل‌ذهن نجات دهد." },
+    { slug:"batman-arkham", title:"Batman: Arkham Series", genre:"اکشن / ماجراجویی", cls:"genre-action", icon:"bat",
+      platform:"PS4 / PS5 / PC", year:"۲۰۰۹ تا ۲۰۱۵", developer:"Rocksteady", rating:"۹۶",
+      desc:"در نقش بروس واین/بتمن، باید در تیمارستان و سپس در شهر آرکهام با شرورترین دشمنان گاتهام‌سیتی از جمله جوکر، بین و ریدلر مقابله کنی؛ ترکیبی از مبارزات نزدیک روان، مخفی‌کاری و کارآگاه‌بازی." },
+    { slug:"spiderman1", title:"Marvel's Spider-Man", genre:"اکشن / متن‌باز", cls:"genre-action", icon:"web",
+      platform:"PS4 / PS5 / PC", year:"۲۰۱۸", developer:"Insomniac Games", rating:"۸۷",
+      desc:"پیتر پارکر پس از هشت سال تجربه در نقش اسپایدرمن، با ظهور گروه شرور «کارتل شش‌انگشتی» و بازگشت دشمن قدیمی‌اش «مستر نگیتیو» باید هم زندگی شخصی‌اش و هم نیویورک را نجات دهد." },
+    { slug:"spiderman2", title:"Marvel's Spider-Man 2", genre:"اکشن / متن‌باز", cls:"genre-action", icon:"web",
+      platform:"PS5", year:"۲۰۲۳", developer:"Insomniac Games", rating:"۹۱",
+      desc:"پیتر پارکر و مایلز مورالز، هر دو در نقش اسپایدرمن، با تهدید سیمبیوت ونوم روبه‌رو می‌شوند؛ داستانی که همزمان به رشد شخصیتی هر دو قهرمان و رابطه‌شان با اطرافیانشان می‌پردازد." },
+    { slug:"pes2013", title:"PES 2013", genre:"ورزشی / فوتبال", cls:"genre-sport", icon:"ball",
+      platform:"PS3 / PC", year:"۲۰۱۲", developer:"Konami", rating:"۸۲",
+      desc:"یکی از محبوب‌ترین نسخه‌های کلاسیک PES با گیم‌پلی ساده و روان، حالت «Become a Legend» و لیگ‌ها و تیم‌های محبوب دوران خودش." },
+    { slug:"pes2019", title:"PES 2019", genre:"ورزشی / فوتبال", cls:"genre-sport", icon:"ball",
+      platform:"PS4 / PC", year:"۲۰۱۸", developer:"Konami", rating:"۸۸",
+      desc:"با موتور گرافیکی فاکس‌انجین و انیمیشن‌های واقع‌گرایانه‌تر، یکی از بهترین نسخه‌های PES از نظر گیم‌پلی خالص فوتبال شناخته می‌شود." },
+    { slug:"pes2021", title:"PES 2021", genre:"ورزشی / فوتبال", cls:"genre-sport", icon:"ball",
+      platform:"PS4 / PC", year:"۲۰۲۰", developer:"Konami", rating:"۷۳",
+      desc:"نسخه‌ی به‌روزرسانی‌شده (Season Update) بر پایه‌ی PES 2020، با تمرکز روی حالت مای‌کلاب و بدون تغییرات بزرگ در گیم‌پلی." },
+    { slug:"fc26", title:"eFootball 26 / FC 26", genre:"ورزشی / فوتبال", cls:"genre-sport", icon:"ball",
+      platform:"PS5 / PC", year:"۲۰۲۵-۲۰۲۶", developer:"Konami / EA Sports", rating:"۸۲",
+      desc:"جدیدترین نسخه‌های شبیه‌سازی فوتبال با گرافیک به‌روز، دو حالت گیم‌پلی «Authentic» و «Competitive»، لیسانس‌های رسمی و حالت‌های آنلاین زنده." },
+  ];
+
+  const icons = {
+    biohazard: `<svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="4"><circle cx="50" cy="50" r="10"/><circle cx="50" cy="25" r="12"/><circle cx="28" cy="62" r="12"/><circle cx="72" cy="62" r="12"/><path d="M50 40 L50 25 M42 55 L28 62 M58 55 L72 62" stroke-width="4"/></svg>`,
+    bat: `<svg viewBox="0 0 100 60" fill="currentColor"><path d="M50 15 C45 5 30 0 15 10 C25 15 30 22 32 28 C15 25 5 30 2 42 C15 38 25 40 32 46 C38 50 45 50 50 45 C55 50 62 50 68 46 C75 40 85 38 98 42 C95 30 85 25 68 28 C70 22 75 15 85 10 C70 0 55 5 50 15 Z"/></svg>`,
+    web: `<svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="50" cy="50" r="42"/><circle cx="50" cy="50" r="28"/><circle cx="50" cy="50" r="14"/><path d="M50 8 L50 92 M8 50 L92 50 M20 20 L80 80 M80 20 L20 80"/></svg>`,
+    ball: `<svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="3"><circle cx="50" cy="50" r="40"/><path d="M50 25 L65 38 L59 56 L41 56 L35 38 Z" fill="currentColor" stroke="none"/><path d="M50 10 L50 25 M50 90 L50 75 M10 50 L25 45 M90 50 L75 45 M20 20 L34 33 M80 20 L66 33 M20 80 L30 62 M80 80 L70 62"/></svg>`
+  };
+
+  const grid = document.getElementById('gamesGrid');
+  games.forEach((g, i) => {
+    const card = document.createElement('div');
+    card.className = `game-card ${g.cls}`;
+    card.innerHTML = `
+      <div class="game-cover">
+        <div class="stripe"></div>${icons[g.icon]}
+        <img src="images/${g.slug}.jpg" alt="${g.title}" onerror="this.remove()">
+      </div>
+      <div class="game-body">
+        <span class="game-tag mono">${g.genre}<span class="rating-badge">${g.rating}</span></span>
+        <h3>${g.title}</h3>
+        <div class="meta">${g.platform} · ${g.year}</div>
+      </div>`;
+    card.addEventListener('click', () => openModal(i));
+    grid.appendChild(card);
+  });
+
+  const overlay = document.getElementById('modalOverlay');
+  function openModal(i){
+    const g = games[i];
+    document.getElementById('modalTag').textContent = g.genre;
+    document.getElementById('modalRating').textContent = 'متاکریتیک ' + g.rating;
+    document.getElementById('modalTitle').textContent = g.title;
+    document.getElementById('modalDesc').textContent = g.desc;
+    document.getElementById('modalSpecs').innerHTML = `
+      <div class="modal-spec-row"><span>پلتفرم</span><span>${g.platform}</span></div>
+      <div class="modal-spec-row"><span>سال انتشار</span><span>${g.year}</span></div>
+      <div class="modal-spec-row"><span>سازنده</span><span>${g.developer}</span></div>
+      <div class="modal-spec-row"><span>امتیاز متاکریتیک</span><span>${g.rating} / ۱۰۰</span></div>`;
+
+    const coverWrap = document.getElementById('modalCoverWrap');
+    const coverImg = document.getElementById('modalCoverImg');
+    coverImg.onerror = () => { coverWrap.style.display = 'none'; };
+    coverImg.onload = () => { coverWrap.style.display = 'block'; };
+    coverWrap.style.display = 'none';
+    coverImg.src = `images/${g.slug}.jpg`;
+
+    overlay.classList.add('open');
+  }
+  document.getElementById('modalClose').addEventListener('click', () => overlay.classList.remove('open'));
+  overlay.addEventListener('click', (e) => { if(e.target === overlay) overlay.classList.remove('open'); });
+
+  // ---- boot loader ----
+  window.addEventListener('load', () => {
+    const bar = document.getElementById('bootBar');
+    const label = document.getElementById('bootLabel');
+    const boot = document.getElementById('boot');
+    let pct = 0;
+    const interval = setInterval(() => {
+      pct += Math.random() * 18 + 8;
+      if(pct >= 100){
+        pct = 100;
+        clearInterval(interval);
+        setTimeout(() => boot.classList.add('hidden'), 300);
+      }
+      bar.style.width = pct + '%';
+      label.textContent = `در حال بارگذاری... ${Math.floor(pct)}٪`;
+    }, 180);
+  });
+</script>
+
+</body>
+</html>
